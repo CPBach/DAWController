@@ -10,6 +10,8 @@
 #include <avr/io.h>
 #include<avr/interrupt.h>
 #include<avr/sleep.h>
+// Maybe implement our own abs function, instead of importing the whole stdlib
+#include <stdlib.h>
 #include "lcd.h"
 #include "midi.h"
 
@@ -43,12 +45,17 @@ volatile unsigned char channel = 0x00;
 volatile unsigned char values[3][16];
 char* char_to_number(unsigned char c);
 
+
+
 int main ( void ){
+
+	char* headtitle = "DAWController1.0";
+
 	// Initialize Display
 	lcd_init(LCD_DISP_ON);
 
 	// Display title
-	char* headtitle = "DAWController1.0";
+
 	lcd_puts(headtitle);
 
 	// Define Input
@@ -70,18 +77,18 @@ int main ( void ){
 
 		unsigned char reading = avg_metering(channel, 16);
 
-		if (values[channel][output_state] != reading){
+		// TODO: Think of another way to avoid ripples
+		if (abs(((int16_t)values[channel][output_state]) - reading) >1){
 			values[channel][output_state] = reading;
-			midi_send(0xB0);
-			midi_send(0);
-			midi_send(127);
+			midi_send(midi_messages[0][0][0]);
+			midi_send(midi_messages[0][0][1]);
+			midi_send(reading);
 			lcd_gotoxy(0,1);
 			lcd_puts(mapping[channel][output_state]);
+			lcd_puts(char_to_number(reading));
 		}
 		// Wait for interrupt to change output state
 		while(tmp_output_state == output_state){
-			lcd_gotoxy(0,1);
-			lcd_puts("Waiting");
 		}
 
 	}
@@ -117,6 +124,8 @@ unsigned char ADC_Read( uint8_t channel )
 
 unsigned char avg_metering( unsigned char channel, unsigned char count){
 	uint16_t tmp = 0;
+	// Drop first reading
+	ADC_Read(channel);
 	for(int i=0;i<count;i++){
 		tmp += ADC_Read(channel);
 	}
@@ -171,7 +180,4 @@ ISR(TIMER1_OVF_vect)
 	}
 
 	PORTB = (PORTB&0xf0) | output_state;
-
-	//test_char++;
-
 }

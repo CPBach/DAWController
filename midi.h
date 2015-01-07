@@ -14,13 +14,19 @@
 #define USART_BAUDRATE 31250
 #define BAUD_PRESCALE (((XTAL/ (USART_BAUDRATE * 16UL))) - 1)
 
-extern const char (*control_names[48])[16];
+
+#define CONTROL_CHANGE_CH1 0xB0
+#define GENERAL_PURPOSE_CONTROLLER1 0x10
+#define VOLUME 0x07
+
+extern const unsigned char (*control_names[48])[16];
 
 
 extern void initialize_midi_map( void );
 extern void MIDI_init( void );
 extern void midi_send( char s );
 
-volatile char* mapping[3][16];
+char* mapping[3][16];
+unsigned char midi_messages[3][16][2];
 
 #endif /* MIDI_H_ */

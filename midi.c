@@ -10,20 +10,15 @@
 #include "midi.h"
 
 const unsigned char (*control_names[48])[16] =
-{"Vol.Ch 1: ","Vol.Ch 2: ","Vol.Ch 3: ","Vol.Ch 4: ","Vol.Ch 5: ","Vol.Ch 6: ","Vol.Ch 7: ","Vol.Ch 8: ",
- "GP1 8: ","GP1 7: ","GP1 6: ","GP1 5: ","GP1 4: ","GP1 3: ","GP1 2: ","GP1 1: ",
- "DELAY:  ","REPEAT: ","MON LEVEL: ","LEVEL: ","MstSldLvl L: ","MstSldLvl R: ","ECHOBtn: ","MO Btn: ",
- "GP2 8: ","GP2 7: ","GP2 6: ","GP2 5: ","GP2 4: ","GP2 3:", "GP2 2: ","GP2 1: ",
- "GP4 1: ","GP4 2: ","GP4 3: ","GP4 4: ","GP4 5: ","GP4 6: ","GP4 7: ","GP4 8: ",
- "GP3 8: ","GP3 7: ","GP3 6: ","GP3 5: ","GP3 4: ","GP3 3: ","GP3 2: ","GP3 1: "};
+{"Vol.Ch 1:    ","Vol.Ch 2:    ","Vol.Ch 3:    ","Vol.Ch 4:    ","Vol.Ch 5:    ","Vol.Ch 6:    ","Vol.Ch 7:    ","Vol.Ch 8:    ",
+ "GP1 8:       ","GP1 7:       ","GP1 6:       ","GP1 5:       ","GP1 4:       ","GP1 3:       ","GP1 2:       ","GP1 1:       ",
+ "DELAY:       ","REPEAT:      ","MON LEVEL:   ","LEVEL:       ","MstSldLvl L: ","MstSldLvl R: ","ECHOBtn:     ","MO Btn:      ",
+ "GP2 8:       ","GP2 7:       ","GP2 6:       ","GP2 5:       ","GP2 4:       ","GP2 3:       ","GP2 2:       ","GP2 1:       ",
+ "GP4 1:       ","GP4 2:       ","GP4 3:       ","GP4 4:       ","GP4 5:       ","GP4 6:       ","GP4 7:       ","GP4 8:       ",
+ "GP3 8:       ","GP3 7:       ","GP3 6:       ","GP3 5:       ","GP3 4:       ","GP3 3:       ","GP3 2:       ","GP3 1:       "};
 // 0xB0 , 0x10 , velocity (GP1 channel 1
 
 
-
-const unsigned char midi_messages[3][16][2] =
-{
-
-};
 
 void MIDI_init( void ){
 	// 31,250 baud, asynchronous, 1 start bit, 1 stop bit
@@ -56,6 +51,13 @@ void initialize_midi_map( void ){
 		mapping[1][i] = control_names[i+16];
 		mapping[2][i] = control_names[i+32];
 	}
+
+	for(int i=0;i<8;i++){
+		// Init volume sliders
+		midi_messages[0][i][0] = CONTROL_CHANGE_CH1 + i;
+		midi_messages[0][i][1] = VOLUME;
+	}
+
 }
 
 
