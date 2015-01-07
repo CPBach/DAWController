@@ -11,6 +11,7 @@
 #include<avr/interrupt.h>
 #include<avr/sleep.h>
 #include "lcd.h"
+#include "midi.h"
 
 #define RUNNING 1
 #define SUCCESS 0
@@ -21,19 +22,18 @@
 
 #define CONTROL_PORT PORTB
 
-#define USART_BAUDRATE 31250
-#define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
-
 
 #ifdef LCD_PORT
 #define DISPLAY_PORT LCD_PORT
 #endif
 
+
 void ADC_Init( void );
-unsigned char ADC_Read( uint8_t channel );
 void MIDI_init( void );
-void testing_method( void );
 void TIMER_init( void );
+
+unsigned char ADC_Read( uint8_t channel );
+unsigned char avg_metering( unsigned char channel, unsigned char count );
 
 
 
@@ -66,12 +66,23 @@ int main ( void ){
 
 
 	while(RUNNING){
-		unsigned char reading = ADC_Read(channel);
-		lcd_gotoxy(0,1);
+		unsigned char tmp_output_state = output_state;
+
+		unsigned char reading = avg_metering(channel, 16);
+
 		if (values[channel][output_state] != reading){
-			lcd_puts(char_to_number(reading));
+			values[channel][output_state] = reading;
+			midi_send(0xB0);
+			midi_send(0);
+			midi_send(127);
+			lcd_gotoxy(0,1);
+			lcd_puts(mapping[channel][output_state]);
 		}
-		values[channel][output_state] = reading;
+		// Wait for interrupt to change output state
+		while(tmp_output_state == output_state){
+			lcd_gotoxy(0,1);
+			lcd_puts("Waiting");
+		}
 
 	}
 
@@ -104,39 +115,21 @@ unsigned char ADC_Read( uint8_t channel )
 }
 
 
-unsigned char avg_metering( uint8_t channel, uint8_t count){
-	char tmp;
-
+unsigned char avg_metering( unsigned char channel, unsigned char count){
+	uint16_t tmp = 0;
+	for(int i=0;i<count;i++){
+		tmp += ADC_Read(channel);
+	}
+	tmp /= count;
+	return (unsigned char) tmp;
 }
 
-void MIDI_init( void ){
-	// 31,250 baud, asynchronous, 1 start bit, 1 stop bit
-
-	// Use 8-bit character sizes, 1 start, 1 stop bit - URSEL bit set to select the UCRSC register
-	UCSRC = (1 << URSEL) | (1 << UCSZ0) | (1 << UCSZ1);
-
-	UBRRH = (BAUD_PRESCALE >> 8);
-	UBRRL = BAUD_PRESCALE;
-	// Turn on the transmission circuitry
-	UCSRB = (1 << TXEN);
-}
-
-void uart_put(char s)
-{
-/* Wait for empty transmit buffer */
-	while ( !( UCSRA & (1<<UDRE)) );
-		UDR = s;
-}
-
-void testing_method( void ){
-
-}
 
 void TIMER_init( void ){
 	// Initialisierung:
 
-	TCCR1B |= (1<<CS12);
-	TCNT1 = 62411;
+	TCCR1B |= (1<<CS11) | (1<<CS10);
+	TCNT1 = 65411;
 	TIMSK |= (1<<TOIE1);
 	sei();
 }
@@ -163,7 +156,7 @@ char* char_to_number(unsigned char c){
 
 ISR(TIMER1_OVF_vect)
 {
-	TCNT1 = 62411;
+	TCNT1 = 65411;
 	if(output_state == 15){
 		output_state = 0;
 		if(channel == 2){
