@@ -17,6 +17,6 @@ We simply turned one Mic-In into a DC-IN, another MIC-In into a MIDI-OUT and a M
 <img src="https://raw.githubusercontent.com/CPBach/DAWController/master/mixer12.jpg" align="left" hspace="10" vspace="6">
 This is how the mixer looks from the inside. Quite a mess.
 
-<img src="https://raw.githubusercontent.com/CPBach/DAWController/master/mixer10.jpg" align="left" width=2136 height=1424 hspace="10" vspace="6">
+<img src="https://raw.githubusercontent.com/CPBach/DAWController/master/mixer10.jpg" align="left" hspace="10" vspace="6">
 
 
