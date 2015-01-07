@@ -1,10 +1,3 @@
-/*
- * interrupt.c
- *
- *  Created on: 07.01.2015
- *      Author: Bubble
- */
-
 #include <avr/interrupt.h>
 #include "main.h"
 

@@ -1,10 +1,3 @@
-/*
- * main.h
- *
- *  Created on: 07.01.2015
- *      Author: Bubble
- */
-
 #include "lcd.h"
 
 #ifndef MAIN_H_

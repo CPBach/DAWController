@@ -1,10 +1,3 @@
-/*
- * helper.c
- *
- *  Created on: 07.01.2015
- *      Author: Bubble
- */
-
 char* char_to_number(unsigned char c){
 	static char* fixed = "000";
 

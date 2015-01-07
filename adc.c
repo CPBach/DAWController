@@ -1,10 +1,3 @@
-/*
- * adc.c
- *
- *  Created on: 07.01.2015
- *      Author: Bubble
- */
-
 #include "adc.h"
 
 void ADC_Init( void ){

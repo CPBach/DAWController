@@ -1,11 +1,21 @@
 /*
- * main.c
- *
- *  Created on: 24.12.2014
- *      Author: stefan
- */
+DAW Controller - AVR-Software for controlling Cubase/Logic/...
+Copyright (C) 2014 Stefan Babel
 
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License.
 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 
 #include <avr/io.h>
 #include<avr/sleep.h>
@@ -55,7 +65,13 @@ int main ( void ){
 	while(RUNNING){
 		/*
 		 * The ISR increments output_state from 0 to 15 and then back
-		 * to 0. This is done to control the 4067 multiplexer IC's.
+		 * to 0. When going back to 0 we increment the channel number.
+		 * (ADC0 - ADC2)
+		 * This is done to control the 4067 multiplexer IC's.
+		 * In our configuration we have 3 multiplexer ICs all being
+		 * controlled over PORTB ( The least significant 4 bits )I
+		 * IC1 is on ADC0, IC2 is on ADC1, IC3 is on ADC2.
+		 *
 		 * So we discretize the voltage at the current channel
 		 * and then wait for the outputstate to be changed by the
 		 * ISR. See the implementation in interrupt.c.
@@ -68,9 +84,9 @@ int main ( void ){
 		// TODO: Think of another way to avoid ripples
 		if (abs(((int16_t)values[channel][output_state]) - reading) >1){
 			values[channel][output_state] = reading;
-			// TODO: Implement midi messages
-			midi_send(midi_messages[0][0][0]);
-			midi_send(midi_messages[0][0][1]);
+			// TODO: Implement the right midi messages
+			midi_send(midi_messages[channel][output_state][0]);
+			midi_send(midi_messages[channel][output_state][1]);
 			midi_send(reading);
 			lcd_gotoxy(0,1);
 			lcd_puts(mapping[channel][output_state]);

@@ -1,10 +1,3 @@
-/*
- * midi.h
- *
- *  Created on: 07.01.2015
- *      Author: Bubble
- */
-
 #ifndef MIDI_H_
 #define MIDI_H_
 
@@ -17,6 +10,7 @@
 
 #define CONTROL_CHANGE_CH1 0xB0
 #define GENERAL_PURPOSE_CONTROLLER1 0x10
+#define GENERAL_PURPOSE_CONTROLLER5 0x50
 #define VOLUME 0x07
 
 extern const unsigned char (*control_names[48])[16];

@@ -1,10 +1,3 @@
-/*
- * adc.h
- *
- *  Created on: 07.01.2015
- *      Author: Bubble
- */
-
 #ifndef ADC_H_
 #define ADC_H_
 
