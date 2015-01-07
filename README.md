@@ -6,8 +6,6 @@ This is done by using the AVR's intern AD-converter to discretize voltage on the
 MIDI-messages. To be able to measure a large amount of resistors, we use Multiplexer-ICs.
 Every knob/slider/switch is configurable with a custom MIDI-message-number.
 
-<img src="https://raw.githubusercontent.com/CPBach/DAWController/master/mixer10.jpg" align="left" hspace="10" vspace="6">
-
 <img src="https://raw.githubusercontent.com/CPBach/DAWController/master/1.jpg" align="left" hspace="10" vspace="6">
 
 As it stands, we are supporting some HD44870 based LCD's with Peter Fleurys Library.
@@ -18,5 +16,7 @@ We simply turned one Mic-In into a DC-IN, another MIC-In into a MIDI-OUT and a M
 
 <img src="https://raw.githubusercontent.com/CPBach/DAWController/master/mixer12.jpg" align="left" hspace="10" vspace="6">
 This is how the mixer looks from the inside. Quite a mess.
+
+<img src="https://raw.githubusercontent.com/CPBach/DAWController/master/mixer10.jpg" align="left" width=2136 height=1424 hspace="10" vspace="6">
 
 
